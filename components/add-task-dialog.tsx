@@ -63,17 +63,16 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                 <SelectItem value="health">Health</SelectItem>
                 <SelectItem value="skincare">Skincare</SelectItem>
                 <SelectItem value="fitness">Fitness</SelectItem>
-                
-                {isAddingCategory ? <Input id="category" onChange={(e) => setCategory(e.target.value)} placeholder="Enter category name" />
-              :
-                <Button
-                  onClick={() => setIsAddingCategory(true)}
-                  className="inline-flex items-center justify-center"
-                  variant="outline"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              }
+                  {isAddingCategory ? <Input id="category" onChange={(e) => setCategory(e.target.value)} placeholder="Enter category name" />
+                :
+                  <Button
+                    onClick={() => setIsAddingCategory(true)}
+                    className="inline-flex items-center justify-center"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                }
               </SelectContent>
             </Select>
           </div>

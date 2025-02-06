@@ -7,8 +7,15 @@ import { Plus, Moon, Sun, CalendarIcon, BarChart3 } from "lucide-react";
 import { AddTaskDialog } from "@/components/add-task-dialog";
 import { useAppSelector } from '@/redux/store/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { DayView } from "@/components/day-view";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { TaskList } from "@/components/task-list";
+import { DashboardStats } from "@/components/dashboard-stats";
 
-export default function page() {
+export default function Page() {
+  const [date, setDate] = useState<Date>(new Date());
   const { setTheme, theme } = useTheme();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const username = useAppSelector((state) => state.categoryReducer.value.name);
@@ -47,10 +54,49 @@ export default function page() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="calendar" className="space-y-4">
-            <h1>category: {username}</h1>
+            <div className="grid gap-4 md:grid-cols-[300px_1fr]">
+              <Card>
+                <CardContent className="p-3">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(date) => date && setDate(date)}
+                    className="rounded-md"
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    {date.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DayView date={date} />
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Tasks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[300px] pr-4">
+                  <TaskList />
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </TabsContent>
+
           <TabsContent value="dashboard">
-            {/* <DashboardStats /> */}
+            <DashboardStats />
           </TabsContent>
         </Tabs>
       </main>
