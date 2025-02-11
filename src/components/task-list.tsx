@@ -1,8 +1,8 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/src/components/ui/checkbox";
+import { Badge } from "@/src/components/ui/badge";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
 
 const DEMO_TASKS = [
   {

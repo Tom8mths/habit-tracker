@@ -2,22 +2,24 @@
 
 import React, { useState } from 'react'
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/ui/button";
 import { Plus, Moon, Sun, CalendarIcon, BarChart3 } from "lucide-react";
-import { AddTaskDialog } from "@/components/add-task-dialog";
-import { useAppSelector } from '@/redux/store/store';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { DayView } from "@/components/day-view";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { TaskList } from "@/components/task-list";
-import { DashboardStats } from "@/components/dashboard-stats";
+import { AddTaskDialog } from "@/src/components/add-task-dialog";
+import { useAppSelector } from '@/src/redux/store/store';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Calendar } from "@/src/components/ui/calendar";
+import { DayView } from "@/src/components/day-view";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { TaskList } from "@/src/components/task-list";
+import { DashboardStats } from "@/src/components/dashboard-stats";
+import { SignInModal } from '../components/sign-in-modal';
 
 export default function Page() {
   const [date, setDate] = useState<Date>(new Date());
   const { setTheme, theme } = useTheme();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const username = useAppSelector((state) => state.categoryReducer.value.name);
 
   return (
@@ -39,6 +41,13 @@ export default function Page() {
             >
               <Plus className="h-4 w-4" /> Add Task
             </Button>
+            <Button
+              onClick={() => setIsSignInModalOpen(true)}
+              className="gap-2"
+              variant="outline"
+            >
+              Sign in / Sign up
+            </Button>
           </div>
         </div>
       </header>
@@ -57,12 +66,12 @@ export default function Page() {
             <div className="grid gap-4 md:grid-cols-[300px_1fr]">
               <Card>
                 <CardContent className="p-3">
-                  <Calendar
+                  {/* <Calendar
                     mode="single"
                     selected={date}
                     onSelect={(date) => date && setDate(date)}
                     className="rounded-md"
-                  />
+                  /> */}
                 </CardContent>
               </Card>
 
@@ -101,6 +110,7 @@ export default function Page() {
         </Tabs>
       </main>
       <AddTaskDialog open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen} />
+      <SignInModal open={isSignInModalOpen} onOpenChange={setIsSignInModalOpen} />
     </div>
   )
 }

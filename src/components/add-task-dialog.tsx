@@ -1,27 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+  DialogDescription,
+} from "@/src/components/ui/dialog";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/src/components/ui/select";
 import { Plus } from "lucide-react";
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store/store';
-import { addNewCategory, category } from "@/redux/features/category-slices";
+import { AppDispatch } from '@/src/redux/store/store';
+import { addNewCategory, category } from "@/src/redux/features/category-slices";
 
 interface AddTaskDialogProps {
   open: boolean;
@@ -45,7 +46,8 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
+      <DialogDescription>Add a task</DialogDescription>
+      <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">

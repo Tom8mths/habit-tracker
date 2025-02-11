@@ -1,8 +1,8 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { Badge } from "@/src/components/ui/badge";
+import { Checkbox } from "@/src/components/ui/checkbox";
 
 interface DayViewProps {
   date: Date;
