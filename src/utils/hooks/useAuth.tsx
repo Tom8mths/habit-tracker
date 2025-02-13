@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useState, useContext, useEffect } from 'react';
 import { registerUser, signIn } from '../api/auth';
 
@@ -5,7 +7,7 @@ interface AuthContextType {
   user: any | null;
   loading: boolean;
   error: string | null;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
+  signUpUser: (name: string, email: string, password: string) => Promise<void>;
   signInUser: (email: string, password: string) => Promise<void>;
   signOut: () => void;
 }
@@ -33,7 +35,7 @@ export const AuthProvider = ({ children }: {children: React.ReactNode }) => {
     }
   }, []);
 
-  const signUp = async (name: string, email: string, password: string) => {
+  const signUpUser = async (name: string, email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
@@ -68,7 +70,7 @@ export const AuthProvider = ({ children }: {children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, signUp, signInUser, signOut }}>
+    <AuthContext.Provider value={{ user, loading, error, signUpUser, signInUser, signOut }}>
       {children}
     </AuthContext.Provider>
   );
