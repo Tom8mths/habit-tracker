@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useAuth } from "../utils/hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 interface SignInModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -35,12 +35,12 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
   };
 
   const handleSignUpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSignInForm({...signInform, [e.target.name]: e.target.value});
+    setSignUpForm({...signUpForm, [e.target.name]: e.target.value});
   };
 
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signInUser(signInform.email, signInform.password);
+    await signUpUser(signUpForm.username, signInform.email, signInform.password);
   };
   
   return (
@@ -77,40 +77,42 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
                 <Button variant="secondary" onClick={() => onOpenChange(false)}>
                   Cancel
                 </Button>
-                <Button className="mb-2 sm:mb-0" type="submit">
+                <Button loading={loading} className="mb-2 sm:mb-0" spinnerColor="black" type="submit">
                   Sign In
                 </Button>
               </DialogFooter>
             </form>
           </TabsContent>
           <TabsContent value="sign-up">
-            <DialogHeader>
-              <DialogTitle>Sign Up</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Username</Label>
-                <Input id="username" placeholder="Enter your username" />
+            <form onSubmit={handleSignUpSubmit}>
+              <DialogHeader>
+                <DialogTitle>Sign Up</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Username</Label>
+                  <Input onChange={handleSignUpChange} id="username" name="username" placeholder="Enter your username" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="title">Email</Label>
+                  <Input onChange={handleSignUpChange} id="email" name="email" placeholder="Enter your email" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time">Password</Label>
+                  <Input onChange={handleSignUpChange} id="password" name="password" type="password" placeholder="Enter your password"/>
+                </div>
+                <div className="space-y-2">
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="title">Email</Label>
-                <Input id="email" placeholder="Enter your email" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="time">Password</Label>
-                <Input id="password" type="password" placeholder="Enter your password"/>
-              </div>
-              <div className="space-y-2">
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="secondary" onClick={() => onOpenChange(false)}>
-                Cancel
-              </Button>
-              <Button>
-                Sign Up
-              </Button>
-            </DialogFooter>
+              <DialogFooter>
+                <Button variant="secondary" onClick={() => onOpenChange(false)}>
+                  Cancel
+                </Button>
+                <Button loading={loading} className="mb-2 sm:mb-0" spinnerColor="black" type="submit">
+                  Sign Up
+                </Button>
+              </DialogFooter>
+            </form>
           </TabsContent>
         </Tabs>
       </DialogContent>
