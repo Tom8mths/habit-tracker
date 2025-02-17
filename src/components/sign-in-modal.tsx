@@ -19,7 +19,7 @@ interface SignInModalProps {
 }
 
 export function SignInModal({ open, onOpenChange }: SignInModalProps) {
-  const { signInUser, signUpUser, loading, error } = useAuth();
+  const { signInUser, signUpUser, loading, error, success, resetStatus } = useAuth();
   const [signInform, setSignInForm] = useState({email: '', password: ''});
   const [signUpForm, setSignUpForm] = useState({email: '', password: '', username: ''});
 
@@ -28,8 +28,6 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
   };
 
   const handleSignInSubmit = async (e: React.FormEvent) => {
-    console.log('teste');
-    
     e.preventDefault();
     await signInUser(signInform.email, signInform.password);
   };
@@ -42,6 +40,13 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
     e.preventDefault();
     await signUpUser(signUpForm.username, signInform.email, signInform.password);
   };
+
+  useEffect(() => {
+    if(success) {
+      onOpenChange(false);
+      resetStatus();
+    }
+  }, [success, onOpenChange, resetStatus])
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
