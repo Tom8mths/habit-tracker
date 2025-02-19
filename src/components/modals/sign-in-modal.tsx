@@ -8,18 +8,24 @@ import {
 } from "@/src/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { useAuth } from "../utils/hooks/useAuth";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
+import { resetAuthState, signInUser, signUpUser } from "@/src/redux/features/auth-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/redux/store/store";
+
 interface SignInModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export function SignInModal({ open, onOpenChange }: SignInModalProps) {
-  const { signInUser, signUpUser, loading, error, success, resetStatus } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error, successMessage, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  
   const [signInform, setSignInForm] = useState({email: '', password: ''});
   const [signUpForm, setSignUpForm] = useState({email: '', password: '', username: ''});
 
@@ -29,7 +35,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
 
   const handleSignInSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signInUser(signInform.email, signInform.password);
+    await dispatch(signInUser({email: signInform.email, password: signInform.password}));
   };
 
   const handleSignUpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,15 +44,21 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
 
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signUpUser(signUpForm.username, signInform.email, signInform.password);
+    await dispatch(signUpUser({name: signUpForm.username, email: signInform.email, password: signInform.password}));
   };
 
   useEffect(() => {
-    if(success) {
-      onOpenChange(false);
-      resetStatus();
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(resetAuthState());
     }
-  }, [success, onOpenChange, resetStatus])
+    if (error) {
+      toast.error(error);
+    }
+    if (isAuthenticated) {
+      onOpenChange(false)
+    }
+  }, [successMessage, error, dispatch, isAuthenticated, onOpenChange]);
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
