@@ -1,26 +1,38 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from "next-themes";
 import { Button } from "@/src/components/ui/button";
 import { Plus, Moon, Sun, CalendarIcon, BarChart3 } from "lucide-react";
-import { AddTaskDialog } from "@/src/components/add-task-dialog";
-import { useAppSelector } from '@/src/redux/store/store';
+import { AddTaskDialog } from "@/src/components/modals/add-task-dialog";
+import { RootState, AppDispatch } from '@/src/redux/store/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { Calendar } from "@/src/components/ui/calendar";
+// import { Calendar } from "@/src/components/ui/calendar";
 import { DayView } from "@/src/components/day-view";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { TaskList } from "@/src/components/task-list";
 import { DashboardStats } from "@/src/components/dashboard-stats";
-import { SignInModal } from '../components/sign-in-modal';
+import { SignInModal } from '../components/modals/sign-in-modal';
+import { useDispatch, useSelector } from 'react-redux';
+import UserMenu from '../components/user-menu';
+import { loadUserFromStorage, setUser } from '../redux/features/auth-slice';
 
 export default function Page() {
+  const dispatch = useDispatch<AppDispatch>();
   const [date, setDate] = useState<Date>(new Date());
   const { setTheme, theme } = useTheme();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const username = useAppSelector((state) => state.categoryReducer.value.name);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+
+  useEffect(() => {
+    const user = loadUserFromStorage();
+    if (user) {
+      dispatch(setUser(user));
+    }
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,13 +53,16 @@ export default function Page() {
             >
               <Plus className="h-4 w-4" /> Add Task
             </Button>
-            <Button
-              onClick={() => setIsSignInModalOpen(true)}
-              className="gap-2"
-              variant="outline"
-            >
-              Sign in / Sign up
-            </Button>
+            { isAuthenticated ?
+            <UserMenu /> :
+              <Button
+                onClick={() => setIsSignInModalOpen(true)}
+                className="gap-2"
+                variant="outline"
+              >
+                Sign in / Sign up
+              </Button>
+            }
           </div>
         </div>
       </header>

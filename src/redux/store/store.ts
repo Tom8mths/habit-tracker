@@ -5,11 +5,6 @@ import authReducer from "@/src/redux/features/auth-slice";
 import categoryReducer from "@/src/redux/features/category-slices"
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
-const persistConfig = {
-  key: 'habt',
-  storage,
-};
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,
