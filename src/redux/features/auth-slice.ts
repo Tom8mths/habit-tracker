@@ -11,13 +11,17 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
   error: string | null;
+  successMessage: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
+  loading: false,
   error: null,
+  successMessage: null,
 };
 
 // Thunk actions for signing in and signing up
@@ -63,25 +67,54 @@ const authSlice = createSlice({
     signOut(state) {
       state.user = null;
       state.isAuthenticated = false;
+      state.error = null;
+      state.successMessage = null;
       localStorage.removeItem("user");
     },
     setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
     },
+    resetAuthState(state) {
+      state.loading = false;
+      state.error = null;
+      state.successMessage = null;
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(signUpUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
       .addCase(signUpUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.loading = false;
+        state.successMessage = "User signed up successfully.";
+      })
+      .addCase(signUpUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(signInUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
       })
       .addCase(signInUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.loading = false;
+        state.successMessage = "User signed in successfully.";
+      })
+      .addCase(signInUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { signOut, setUser } = authSlice.actions;
+export const { signOut, setUser, resetAuthState } = authSlice.actions;
 export default authSlice.reducer;
