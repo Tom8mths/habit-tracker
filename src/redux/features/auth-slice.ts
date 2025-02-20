@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: string;
-  name: string;
+  username: string;
   email: string;
   profilePic?: string;
 }

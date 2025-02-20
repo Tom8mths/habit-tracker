@@ -83,16 +83,16 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             <Input id="time" type="time" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="schedule">Schedule</Label>
+            <Label htmlFor="schedule">Occurence</Label>
             <Select>
               <SelectTrigger>
-                <SelectValue placeholder="Select schedule" />
+                <SelectValue placeholder="Select Occurence" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="daily">Daily</SelectItem>
                 <SelectItem value="alternate">Alternate Days</SelectItem>
                 <SelectItem value="weekdays">Weekdays</SelectItem>
-                <SelectItem value="weekends">Weekends</SelectItem>
+                <SelectItem value="weekends">Monthly</SelectItem>
               </SelectContent>
             </Select>
           </div>

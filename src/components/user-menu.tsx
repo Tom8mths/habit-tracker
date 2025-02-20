@@ -6,6 +6,7 @@ import { signOut } from "@/src/redux/features/auth-slice";
 import { useRouter } from "next/navigation";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
+import { User } from "lucide-react";
 
 const UserMenu = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,15 +23,18 @@ const UserMenu = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="flex items-center space-x-2 p-2 border rounded-lg bg-white hover:bg-gray-100">
-          <Image
-            src={user.profilePic || "/default-avatar.png"}
-            alt="Profile"
-            width={36}
-            height={36}
-            className="w-9 h-9 rounded-full"
-          />
-          <span className="font-medium">{user.name || "User"}</span>
+        <button className="flex items-center space-x-2 p-2 border rounded-lg">
+          {
+            user.profilePic ? 
+            <Image
+              src={user.profilePic || "/default-avatar.png"}
+              alt="Profile"
+              width={36}
+              height={36}
+              className="w-9 h-9 rounded-full"
+            /> :
+            <User className="w-full rounded-full" /> 
+          }
         </button>
       </DropdownMenu.Trigger>
 
@@ -39,6 +43,11 @@ const UserMenu = () => {
           className="w-48 bg-white shadow-md rounded-lg border p-2 text-gray-900 animate-fadeIn"
           sideOffset={6}
         >
+          <DropdownMenu.Item
+            className="px-4 py-2 rounded-md"
+          >
+            {user.username}
+          </DropdownMenu.Item>
           <DropdownMenu.Item
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             onSelect={() => router.push("/profile")}
