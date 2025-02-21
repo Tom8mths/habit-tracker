@@ -1,35 +1,34 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type Task = {
+  title: string;
+  occurrence: "daily" | "weekly" | "monthly" | "alternate";
+  category: string;
+  date: string | Date;
+};
+
 type InitialState = {
-  value: CategoryState;
-}
+  task: Task;
+};
 
-type CategoryState = {
-  name: string,
-  color: string,
-}
+const initialState: InitialState = {
+  task: {
+    title: "",
+    occurrence: "daily",
+    category: "",
+    date: "",
+  },
+};
 
-const initialState = {
-  value: {
-    name: "",
-    color: "",
-  }
-} as InitialState;
-
-export const category = createSlice({
+export const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
-    addNewCategory: (state, action: PayloadAction<string>) => {
-      return {
-        value: {
-          name: action.payload,
-          color: "default"
-        }
-      }
-    }
-  }
-}); 
+    setTask: (state, action: PayloadAction<Task>) => {
+      state.task = action.payload;
+    },
+  },
+});
 
-export const { addNewCategory } = category.actions;
-export default category.reducer;
+export const { setTask } = categorySlice.actions;
+export default categorySlice.reducer;

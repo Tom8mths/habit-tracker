@@ -8,7 +8,7 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    categoryReducer
+    category: categoryReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
