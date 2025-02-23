@@ -16,7 +16,6 @@ export default function Page() {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-
   useEffect(() => {
     const user = loadUserFromStorage();
     if (user) {

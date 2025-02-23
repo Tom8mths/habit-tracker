@@ -24,12 +24,14 @@ export default function Header({ onAddTask, onSignIn, isAuthenticated}: HeaderPr
         >
           {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
-        <Button
-          onClick={onAddTask}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" /> Add Task
-        </Button>
+        { isAuthenticated &&
+          <Button
+            onClick={onAddTask}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" /> Add Task
+          </Button>
+        }
         { isAuthenticated ?
         <UserMenu /> :
           <Button

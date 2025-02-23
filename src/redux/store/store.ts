@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import authReducer from "@/src/redux/features/auth-slice";
 import categoryReducer from "@/src/redux/features/category-slices"
 import { TypedUseSelectorHook, useSelector } from 'react-redux';

@@ -11,7 +11,9 @@ interface ITask {
 
 export async function createTask(value: ITask) {
   try {
-    const { data } = await axios.post(`${TASK_API_URL}`, value)
+    const { data } = await axios.post(`${TASK_API_URL}`, value, {
+      withCredentials: true,
+    })
     return data;
   } catch (error: unknown) {
     console.log(error);

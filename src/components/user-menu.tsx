@@ -17,7 +17,6 @@ const UserMenu = () => {
 
   const handleSignOut = () => {
     dispatch(signOut());
-    router.push("/login");
   };
 
   return (

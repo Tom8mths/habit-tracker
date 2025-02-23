@@ -150,7 +150,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button loading={loading} type="submit">
+            <Button loading={loading} color="black" type="submit">
               Add Task
             </Button>
           </DialogFooter>
