@@ -2,7 +2,7 @@ import { getTasks } from "@/src/utils/api/tasks";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TaskItem {
-  id: number;
+  _id: number;
   time: string;
   title: string;
   category: string;
