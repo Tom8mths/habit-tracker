@@ -24,3 +24,19 @@ export async function createTask(value: ITask) {
     }
   }
 }
+
+export async function getTasks() {
+  try {
+    const { data } = await axios.get(`${TASK_API_URL}`, {
+      withCredentials: true,
+    })
+    return data;
+  } catch (error: unknown) {
+    console.log(error);
+    if(isAxiosError(error)) {
+      throw new Error(error?.response?.data?.message) || "Something went wrong";
+    } else {
+      throw "An unexpected error occurred";
+    }
+  }  
+}
