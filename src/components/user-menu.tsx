@@ -1,5 +1,3 @@
-"use client";
-
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/src/redux/store/store";
 import { signOut } from "@/src/redux/features/auth-slice";
@@ -26,7 +24,7 @@ const UserMenu = () => {
           {
             user.profilePic ? 
             <Image
-              src={user.profilePic || "/default-avatar.png"}
+              src={user.profilePic}
               alt="Profile"
               width={36}
               height={36}

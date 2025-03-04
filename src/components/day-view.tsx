@@ -1,12 +1,11 @@
-"use client";
-
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { Badge } from "@/src/components/ui/badge";
-import { Checkbox } from "@/src/components/ui/checkbox";
 import { AppDispatch, useAppSelector, RootState } from '@/src/redux/store/store';
 import { useEffect } from "react";
 import { loadTasks } from "../redux/features/task-slice";
 import { useDispatch } from "react-redux";
+import { MagicCard } from "./magicui/magic-card";
+import { useTheme } from "next-themes";
 
 interface DayViewProps {
   date: Date;
@@ -19,6 +18,8 @@ const CATEGORY_COLORS = {
 };
 
 export function DayView({ date }: DayViewProps) {
+  const { theme } = useTheme();
+  
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, loading, error } = useAppSelector((state: RootState) => state.task);
 
@@ -37,11 +38,10 @@ export function DayView({ date }: DayViewProps) {
           <p>{`${error}`}</p>
         ) : (
             tasks.map((item) => (
-              <div key={item._id} className="flex items-start space-x-4">
+              <MagicCard gradientColor={theme === "dark" ? "#262626" : "#D9D9D955"} key={item._id}>
                 <div className="w-16 text-sm text-muted-foreground">{item.time}</div>
                 <div className="flex-1">
-                  <div className="flex items-center space-x-4 rounded-lg border p-4">
-                    <Checkbox checked={item.completed} />
+                  <div className="flex items-center space-x-4 border p-4">
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{item.title}</span>
@@ -55,7 +55,7 @@ export function DayView({ date }: DayViewProps) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </MagicCard>
             ))
         )}
       </div>
