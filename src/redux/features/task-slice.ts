@@ -1,55 +1,96 @@
-import { getTasks } from "@/src/utils/api/tasks";
+import { Task } from "@/src/lib/types";
+import { addNewTask, getTasks } from "@/src/utils/api/tasks";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface TaskItem {
-  _id: number;
-  time: string;
-  title: string;
-  category: string;
-  completed: boolean;
-}
-
 interface TaskState {
-  tasks: TaskItem[],
-  loading: boolean,
-  error: string | null
+  tasks: Task[];
+  loading: {
+    fetch: boolean;
+    create: boolean;
+  };
+  error: {
+    fetch: string | null;
+    create: string | null;
+  };
 }
 
 const initialState: TaskState = {
- tasks: [],
- loading: false,
- error: null
-}
+  tasks: [],
+  loading: {
+    fetch: false,
+    create: false,
+  },
+  error: {
+    fetch: null,
+    create: null,
+  },
+};
 
-export const loadTasks = createAsyncThunk(
+// Thunk to load all tasks
+export const fetchTasks = createAsyncThunk<Task[], void>(
   "tasks/fetch",
   async (_, { rejectWithValue }) => {
     try {
       return await getTasks();
-    } catch (error) {
+    } catch (error: unknown) {
       return rejectWithValue(error);
     }
   }
-)
+);
+
+// Thunk to add a new task
+export const createTask = createAsyncThunk<Task, Task>(
+  "tasks/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      
+      return await addNewTask(data);
+    } catch (error: unknown) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {},
+  reducers: {
+    addTask: (state, action: PayloadAction<Task>) => {
+      state.tasks.push(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(loadTasks.pending, (state) => {
-        state.loading = true;
+      // Handling Load Tasks
+      .addCase(fetchTasks.pending, (state) => {
+        state.loading.fetch = true;
+        state.error.fetch = null;
       })
-      .addCase(loadTasks.fulfilled, (state, action: PayloadAction<TaskItem[]>) => {
-        state.loading = false;
+      .addCase(fetchTasks.fulfilled, (state, action: PayloadAction<Task[]>) => {
+        state.loading.fetch = false;
         state.tasks = action.payload;
       })
-      .addCase(loadTasks.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+      .addCase(fetchTasks.rejected, (state, action) => {
+        state.loading.fetch = false;
+        state.error.fetch = action.payload as string;
+      })
+
+      // Handling Add New Task
+      .addCase(createTask.pending, (state) => {
+        state.loading.create = true;
+        state.error.create = null;
+      })
+      .addCase(createTask.fulfilled, (state, action: PayloadAction<Task>) => {
+        state.loading.create = false;
+        state.tasks.push(action.payload);
+      })
+      .addCase(createTask.rejected, (state, action) => {
+        state.loading.create = false;
+        state.error.create = action.payload as string;
       });
   },
 });
+
+export const { addTask } = taskSlice.actions; 
 
 export default taskSlice.reducer;

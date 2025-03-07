@@ -1,15 +1,9 @@
+import { Task } from "@/src/lib/types";
 import axios, { isAxiosError } from "axios";
 
 const TASK_API_URL = "http://localhost:8080/tasks";
 
-interface ITask {
-  title: string;
-  occurrence: "daily" | "weekly" | "monthly" | "alternate";
-  category: string;
-  date: string | Date;
-}
-
-export async function createTask(value: ITask) {
+export async function addNewTask(value: Task) {
   try {
     const { data } = await axios.post(`${TASK_API_URL}`, value, {
       withCredentials: true,

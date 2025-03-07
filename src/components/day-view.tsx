@@ -2,8 +2,8 @@ import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { Badge } from "@/src/components/ui/badge";
 import { AppDispatch, useAppSelector, RootState } from '@/src/redux/store/store';
 import { useEffect } from "react";
-import { loadTasks } from "../redux/features/task-slice";
-import { useDispatch } from "react-redux";
+import { fetchTasks } from "../redux/features/task-slice";
+import { useDispatch, useSelector } from "react-redux";
 import { MagicCard } from "./magicui/magic-card";
 import { useTheme } from "next-themes";
 
@@ -18,24 +18,23 @@ const CATEGORY_COLORS = {
 };
 
 export function DayView({ date }: DayViewProps) {
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { theme } = useTheme();
   
   const dispatch = useDispatch<AppDispatch>();
   const { tasks, loading, error } = useAppSelector((state: RootState) => state.task);
 
-  console.log('error', error);
-  
   useEffect(() => {
-    dispatch(loadTasks())
-  }, [dispatch])
+      dispatch(fetchTasks());
+  }, [dispatch, isAuthenticated])
 
   return (
     <ScrollArea className="h-[500px] pr-4">
       <div className="space-y-6">
-        { loading ? (
+        { loading.fetch ? (
           <p>Loading...</p>
-        ) : error ? (
-          <p>{`${error}`}</p>
+        ) : error.fetch ? (
+          <p>{`${error.fetch}`}</p>
         ) : (
             tasks.map((item) => (
               <MagicCard gradientColor={theme === "dark" ? "#262626" : "#D9D9D955"} key={item._id}>

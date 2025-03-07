@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
@@ -19,10 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/src/redux/store/store";
-import { createTask } from "@/src/utils/api/tasks";
-import { setTask } from "@/src/redux/features/category-slices";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState, useAppSelector } from "@/src/redux/store/store";
+import { createTask } from "@/src/redux/features/task-slice";
+import { Task } from "@/src/lib/types";
 
 interface AddTaskDialogProps {
   open: boolean;
@@ -30,38 +30,45 @@ interface AddTaskDialogProps {
 }
 
 export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
+  const [localTask, setLocalTask] = useState<Task>({
+    title: "",
+    occurrence: "daily",
+    category: "",
+    date: "",
+  });
+  const { error } = useAppSelector((state: RootState) => state.task);
   const dispatch = useDispatch<AppDispatch>();
-  const task = useSelector((state: RootState) => state.category.task);
   const [loading, setLoading] = useState(false);
   const [time, setTime] = useState("");
 
-  // Handle input changes for title and date
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    dispatch(setTask({ ...task, [name]: value }));
+    setLocalTask((prev: Task) => ({ ...prev, [name]: value }));
   };
 
-  // Handle category and occurrence selection
   const handleSelectChange = (field: "category" | "occurrence") => (value: string) => {
-    dispatch(setTask({ ...task, [field]: value }));
+    setLocalTask((prev: Task) => ({ ...prev, [field]: value }));
   };
 
-  // Handle time separately
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTime(e.target.value);
   };
 
-  // Handle task submission
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent form reload
+    e.preventDefault();
     setLoading(true);
 
     try {
-      const fullDate = new Date(`${task.date}T${time}`);
-      const taskData = { ...task, date: fullDate.toISOString() };
+      const fullDate = new Date(`${localTask.date}T${time}`);
+      const taskData = { ...localTask, date: fullDate.toISOString() };
 
-      await createTask(taskData); // Send to API
-      onOpenChange(false); // Close modal
+      await dispatch(createTask(taskData)).unwrap();
+      onOpenChange(false);
+      setLocalTask({ title: "", occurrence: "daily", category: "", date: "" });
     } catch (error) {
       console.error("Failed to create task", error);
     } finally {
@@ -85,7 +92,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                 id="title" 
                 name="title" 
                 placeholder="Enter task title" 
-                value={task.title} 
+                value={localTask.title} 
                 onChange={handleChange} 
               />
             </div>
@@ -93,7 +100,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             {/* Category Selection */}
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select value={task.category} onValueChange={handleSelectChange("category")}>
+              <Select value={localTask.category} onValueChange={handleSelectChange("category")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
@@ -112,7 +119,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                 id="date" 
                 name="date" 
                 type="date" 
-                value={task.date.toString().split("T")[0]} 
+                value={localTask.date.toString().split("T")[0]} 
                 onChange={handleChange} 
               />
             </div>
@@ -131,7 +138,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             {/* Occurrence Selection */}
             <div className="space-y-2">
               <Label htmlFor="schedule">Occurrence</Label>
-              <Select value={task.occurrence} onValueChange={handleSelectChange("occurrence")}>
+              <Select value={localTask.occurrence} onValueChange={handleSelectChange("occurrence")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Occurrence" />
                 </SelectTrigger>
@@ -150,7 +157,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button loading={loading} color="black" type="submit">
+            <Button loading={loading} color="black" spinnerColor="black" type="submit">
               Add Task
             </Button>
           </DialogFooter>

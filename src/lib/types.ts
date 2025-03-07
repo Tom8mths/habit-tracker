@@ -1,16 +1,15 @@
-export type Category = 'health' | 'skincare' | 'fitness';
-
-export type Schedule = 'daily' | 'alternate' | 'weekdays' | 'weekends';
+export type Occurrence =  "daily" | "weekly" | "monthly" | "alternate";
 
 export interface Task {
-  id: number;
+  id?: number;
   title: string;
-  category: Category;
-  time: string;
-  schedule: Schedule;
-  completed: boolean;
-  createdAt: string;
-  updatedAt: string;
+  category: string;
+  time?: string;
+  date: string | Date,
+  occurrence: Occurrence;
+  completed?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Stats {
