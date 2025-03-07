@@ -1,15 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore } from 'redux-persist';
 import authReducer from "@/src/redux/features/auth-slice";
-import categoryReducer from "@/src/redux/features/category-slices"
 import taskReducer from "@/src/redux/features/task-slice"
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    category: categoryReducer,
-    task: taskReducer
+    task: taskReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
