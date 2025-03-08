@@ -11,8 +11,6 @@ export async function sendAIMessage(value: IAIMessage) {
     const { data } = await axios.post(`${AI_API_URL}`, { question: value.message }, {
       withCredentials: true,
     })
-    console.log('data', data);
-    
     return data;
   } catch (error: unknown) {
     console.log(error);

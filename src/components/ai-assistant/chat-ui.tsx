@@ -2,8 +2,12 @@ import { BotMessageSquare, Send } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import EmptyChatState from "./empty-chat-state";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sendAIMessage } from "@/src/utils/api/ai";
+import { Task } from "@/src/lib/types";
+import { createTask } from "@/src/redux/features/task-slice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/src/redux/store/store";
 
 type Message = {
   role: string,
@@ -11,8 +15,15 @@ type Message = {
 }
 
 export function ChatUI() {
+  const [ taskData, setTaskData ] = useState<Task>({
+    title: "",
+    occurrence: "daily",
+    category: "",
+    date: "",
+  });
   const [ input, setInput ] = useState<string>('');
   const [ messages, setMessages ] = useState<Message[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
   const onSendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
     setMessages(prev => [...prev, ({
       role: 'user',
@@ -21,8 +32,43 @@ export function ChatUI() {
     setInput('')
     event.preventDefault();
     const result = await sendAIMessage({message: input});
-    setMessages(prev => [...prev, result.aiResponse]);
+    let finalResponse = result.aiResponse;
+    
+    if (result.aiResponse && result.aiResponse.content) {
+      try {
+        const jsonMatch = result.aiResponse.content.match(/\{[\s\S]*\}/);
+        console.log('jsonMatch', jsonMatch);
+        
+        if (jsonMatch) {
+          const jsonString = jsonMatch[0];
+          const extractedData = JSON.parse(jsonString);
+          if (extractedData.title) {
+            setTaskData(extractedData);
+            const cleanedResponse = result.aiResponse.content.replace(jsonString, '');
+            finalResponse = {content: cleanedResponse
+            .replace(/\n\s*\n/g, '\n') 
+            .replace(/\s+/g, ' ')      
+            .trim()}
+          }
+        }
+      } catch (parseError) {
+        console.error('Failed to parse task data:', parseError);
+      }
+    }
+
+    setMessages(prev => [...prev, finalResponse]);
   }
+
+  useEffect(() => {
+    console.log('taskdata', taskData);
+    if (taskData.title) {
+      const createNewTask = async () => {
+        await dispatch(createTask(taskData)).unwrap();
+      }
+      createNewTask();
+    }
+    
+  }, [taskData, dispatch])
 
   return (
     <div className="flex gap-1 flex-col h-full">
@@ -37,7 +83,7 @@ export function ChatUI() {
           <div key={i}
             className={`flex ${msg.role == 'user' ? 'justify-end' : 'justify-start'} text-sm`}
           >
-            <div className={`p-3 mb-3 border-solid rounded-t-lg ${msg.role == 'user' ? 'bg-white text-black rounded-bl-lg' : 'bg-gray-500 rounded-br-lg'}`}>
+            <div className={`p-3 mb-3 border-solid rounded-t-lg ${msg.role == 'user' ? 'bg-white text-black rounded-bl-lg' : 'bg-slate-800 rounded-br-lg'}`}>
               {msg.content}
             </div>
           </div>
